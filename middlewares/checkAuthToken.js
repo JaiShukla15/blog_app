@@ -10,7 +10,9 @@ const checkAuthToken = async (req, res, next) => {
   let token = headers["authorization"].split(" ")[1];
   jwt.verify(token, SECRET_KEY, (err, info) => {
     if (err) {
-      return res.json({ message: err.message });
+      return next(
+        createError("Token is expired please login in", 401)
+      );
     }
     req.session["user"] = {
       userId: info.userId,

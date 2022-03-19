@@ -6,5 +6,7 @@ router.get("/",checkAuthToken ,postsController.getAllPosts);
 router.get("/my-posts",checkAuthToken ,postsController.myPosts);
 router.post("/add",checkAuthToken,postsController.addPost);
 router.patch("/:id",checkAuthToken,postsController.editPost);
+router.post('/:id/like',checkAuthToken,postsController.likePost);
+router.post('/:id/unlike',checkAuthToken,postsController.unlikePost);
 router.delete("/delete/:id",checkAuthToken,postsController.deletePost);
 module.exports = router;

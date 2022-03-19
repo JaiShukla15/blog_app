@@ -1,6 +1,47 @@
+import { useState } from "react";
+import { Link, Redirect, useHistory } from "react-router-dom";
+import { BASE_URL } from "../../constant";
+import Dialog from "../Dialog/Dialog";
 const Login = () => {
-  return (
+  const history = useHistory();
+  let accessToken = localStorage.getItem('access-token');
+  if(accessToken){
+    history.push('/blogs');
+  }
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState(false);
+  const loginHandler = function () {
+    if (!email || !password) {
+      setError('Please enter email or password');
+      return;
+    }
+    async function login() {
+      const response = await fetch(`${BASE_URL}/users/login`, {
+        method: "POST",
+        body: JSON.stringify({
+          email,
+          password,
+        }),
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+      const data = await response.json();
+      if (data.token) {
+        localStorage.setItem("access-token", data.token);
+        localStorage.setItem("refresh-token", data.refreshToken);
+        setError(null);
+        history.push("/blogs");
+      } else {
+         setError(data.message);
+      }
+    }
+    login();
+  };
+  return(
     <>
+    {error && <Dialog message={error} hide={()=>setError(null)}/> } 
       <section className="vh-100">
         <div className="container py-2 h-100">
           <div className="row d-flex justify-content-center align-items-center h-100">
@@ -18,42 +59,39 @@ const Login = () => {
                     <div className="card-body p-4 p-lg-5 text-black">
                       <form>
                         <div className="d-flex align-items-center mb-3 pb-1">
-                          <i
-                            className="fas fa-cubes fa-2x me-3"
-                          ></i>
-                          <span className="h1 fw-bold mb-0">Logo</span>
+                          <i className="fas fa-cubes fa-2x me-3"></i>
+                          <span className="h1 fw-bold mb-0">Blog App</span>
                         </div>
 
-                        <h5
-                          className="fw-normal mb-3 pb-3"
-                        >
+                        <h5 className="fw-normal mb-3 pb-3">
                           Sign into your account
                         </h5>
 
                         <div className="form-outline mb-4">
+                          <label className="form-label">Email address</label>
                           <input
+                            value={email}
                             type="email"
-                            id="form2Example17"
+                            onChange={(event) => setEmail(event.target.value)}
                             className="form-control form-control-lg"
                           />
-                          <label className="form-label">
-                            Email address
-                          </label>
                         </div>
 
                         <div className="form-outline mb-4">
+                          <label className="form-label">Password</label>
                           <input
+                            value={password}
+                            onChange={(event) =>
+                              setPassword(event.target.value)
+                            }
                             type="password"
-                            id="form2Example27"
                             className="form-control form-control-lg"
                           />
-                          <label className="form-label">
-                            Password
-                          </label>
                         </div>
 
                         <div className="pt-1 mb-4">
                           <button
+                            onClick={loginHandler}
                             className="btn btn-dark btn-lg btn-block"
                             type="button"
                           >
@@ -64,18 +102,10 @@ const Login = () => {
                         <a className="small text-muted" href="#!">
                           Forgot password?
                         </a>
-                        <p className="mb-5 pb-lg-2" >
+                        <p className="mb-5 pb-lg-2">
                           Don't have an account?{" "}
-                          <a href="#!">
-                            Register here
-                          </a>
+                          <Link to={"/auth/register"}>Register here</Link>
                         </p>
-                        <a href="#!" className="small text-muted">
-                          Terms of use.
-                        </a>
-                        <a href="#!" className="small text-muted">
-                          Privacy policy
-                        </a>
                       </form>
                     </div>
                   </div>

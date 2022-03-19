@@ -1,4 +1,4 @@
-const { Op } = require("sequelize");
+const { Op, Sequelize } = require("sequelize");
 const { db } = require("../db");
 const { createError } = require("../errors/customError");
 const asyncHandler = require("../middlewares/asyncHandler");
@@ -57,7 +57,17 @@ module.exports = {
         },
         {
           model: db.comments,
-          attributes:["userId",'comment','updatedAt']
+          attributes: ["userId", "comment", "updatedAt"],
+        },
+        {
+          model: db.likes,
+          attributes: ["user_id", "post_id"],
+          include: [
+            {
+              model: db.user,
+              attributes: [["id", "userId"], "name"],
+            },
+          ],
         },
       ],
     });
@@ -69,6 +79,16 @@ module.exports = {
       include: [
         {
           model: db.comments,
+        },
+        {
+          model: db.likes,
+          attributes: ["user_id", "post_id"],
+          include: [
+            {
+              model: db.user,
+              attributes: [["id", "userId"], "name"],
+            },
+          ],
         },
       ],
     });
@@ -89,5 +109,39 @@ module.exports = {
       return res.json({ success: true, message: "Post Deleted Successfully" });
     }
     next(createError("Post Not Found", 404));
+  }),
+  likePost: asyncHandler(async (req, res, next) => {
+    const loggedInUser = req.session["user"]["userId"];
+    const { id: postId } = req.params;
+    console.log(postId, "POST ID");
+    const foundRecords = await db.likes.findAll({where:{
+      post_id: postId,
+      user_id: loggedInUser,
+    }});
+    let likeDetails;
+    if(!foundRecords.length)
+     likeDetails = await db.likes.create({
+      post_id: postId,
+      user_id: loggedInUser,
+    });   
+    if (!likeDetails) {
+      return res.status(500).json({ message: "Something went wrong" });
+    }
+    res.json({ status: "ok" });
+  }),
+  unlikePost: asyncHandler(async (req, res, next) => {
+    const loggedInUser = req.session["user"]["userId"];
+    const { id: postId } = req.params;
+    let likeDetails = await db.likes.destroy({
+      where: {
+        post_id: postId,
+        user_id: loggedInUser,
+      },
+    });
+
+    if (!likeDetails) {
+      return res.status(500).json({ message: "Something went wrong" });
+    }
+    res.json({ status: "ok" });
   }),
 };

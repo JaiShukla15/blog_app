@@ -5,8 +5,8 @@ const Footer = function() {
         <div
           className="text-center p-3"
         >
-          © 2022 Copyright:
-          <a className="text-white" href="https://mdbootstrap.com/">
+          © 2022 Copyright: &nbsp;
+          <a className="text-white" href="#">
             Blog App
           </a>
         </div>

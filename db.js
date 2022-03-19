@@ -13,13 +13,17 @@ const db = {};
 db.user = require("./models/user")(connection, DataTypes);
 db.posts = require("./models/post")(connection, DataTypes);
 db.comments = require("./models/comments")(connection, DataTypes);
-
+db.likes = require("./models/likes")(connection, DataTypes);
 
 db.user.hasMany(db.posts,{foreignKey:'user_id' , as:'posts'})
 
 db.posts.belongsTo(db.user,{foreignKey:'user_id'});
 
 db.posts.hasMany(db.comments)
+db.user.hasMany(db.likes,{foreignKey:'user_id'});
+db.likes.belongsTo(db.posts,{foreignKey:'post_id'});
+db.likes.belongsTo(db.user,{foreignKey:'user_id'});
+db.posts.hasMany(db.likes,{foreignKey:'post_id'});
 
 db.comments.belongsTo(db.posts);
 db.comments.belongsTo(db.user);
@@ -33,7 +37,7 @@ db.user.hasMany(db.comments, {
 (async () => {
   try {
     await connection.authenticate();
-    connection.sync({ alter: true });
+    connection.sync();
   } catch (err) {
     throw err;
   }

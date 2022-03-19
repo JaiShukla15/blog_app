@@ -3,6 +3,7 @@ const {Op} = require('sequelize');
 const jwt = require("jsonwebtoken");
 const util = require("util");
 const asyncHandler = require("../middlewares/asyncHandler");
+const { createError } = require("../errors/customError");
 jwt.sign = util.promisify(jwt.sign);
 module.exports = {
   getAllUsers: asyncHandler(async (req, res) => {
@@ -29,8 +30,9 @@ module.exports = {
       .status(201)
       .json({ message: "User Registered Successfully", result: data });
   }),
-  login: asyncHandler(async (req, res) => {
+  login: asyncHandler(async (req, res,next) => {
     const { email, password } = req.body;
+    console.log(req.body)
     const foundUser = await db.user.findOne({
       where: {
         email,
@@ -62,7 +64,7 @@ module.exports = {
       refreshToken,
     });
   }),
-  logout: asyncHandler(async (req, res) => {
+  logout: asyncHandler(async (req, res,next) => {
     req.session.destroy();
     res.json({ message: "Logout Successfully" });
   }),
