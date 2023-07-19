@@ -26,6 +26,7 @@ app.use('/api/docs',swaggerUI.serve,swaggerUI.setup(swaggerJSON))
 app.use("/api/users", require("./routes/user"));
 app.use("/api/posts", require("./routes/posts"));
 app.use("/api/posts", require("./routes/comment"));
+app.use("/api/chats", require("./routes/chat"));
 app.use(ErrorHandler);
 const PORT = process.env.PORT || 3000;
 app.get("/", (req, res) => {

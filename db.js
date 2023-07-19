@@ -1,4 +1,7 @@
 const { Sequelize,DataTypes } = require("sequelize");
+const redis = require('redis');
+const REDIS_URL = process.env.REDIS_URL;
+let redisClient = redis.createClient(REDIS_URL);
 const DB_NAME = process.env.DB_NAME;
 const DB_USER = process.env.DB_USER;
 const DB_PASS = process.env.DB_PASSWORD;
@@ -14,10 +17,19 @@ db.user = require("./models/user")(connection, DataTypes);
 db.posts = require("./models/post")(connection, DataTypes);
 db.comments = require("./models/comments")(connection, DataTypes);
 db.likes = require("./models/likes")(connection, DataTypes);
+db.chats = require("./models/chat")(connection, DataTypes);
 
 db.user.hasMany(db.posts,{foreignKey:'user_id' , as:'posts'})
+db.user.hasMany(db.chats,{foreignKey:'sender_id' , as:'chats'})
+db.user.hasMany(db.chats,{foreignKey:'receiver_id'})
+
+
 
 db.posts.belongsTo(db.user,{foreignKey:'user_id'});
+
+db.chats.belongsTo(db.user,{foreignKey:'sender_id'});
+db.chats.belongsTo(db.user,{foreignKey:'receiver_id'});
+
 
 db.posts.hasMany(db.comments)
 db.user.hasMany(db.likes,{foreignKey:'user_id'});
@@ -34,15 +46,21 @@ db.user.hasMany(db.comments, {
   },
 });
 
+
+
 (async () => {
   try {
+    redisClient = await redisClient.connect();
     await connection.authenticate();
-    connection.sync();
+    connection.sync({
+      alter:true
+    });
   } catch (err) {
     throw err;
   }
 })();
 module.exports = {
   connection,
-  db
+  db,
+  redisClient
 };

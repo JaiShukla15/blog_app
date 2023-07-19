@@ -1,35 +1,48 @@
-
 {
     "swagger": "2.0",
     "info": {
         "description": "This is a simple example NodeJS API project to demonstrate Swagger Documentation",
         "version": "1.0.0",
-        "title": "Tasks API",
+        "title": "Blog API",
         "contact": {
             "email": "abc@gmail.com"
-        },
-        "license": {
-            "name": "Apache 2.0",
-            "url": "http://www.apache.org/licenses/LICENSE-2.0.html"
         }
     },
-    "schemes": ["http"],
+    "schemes": [
+        "http"
+    ],
     "host": "localhost:8080",
     "basePath": "/api",
-    "paths" : {
-        "/users" : {
-            "get" : {
-                "summary" : "Get all the users",
+    "paths": {
+        "/users/": {
+            "get": {
+                "summary": "Get all the users",
                 "description": "Get all the users",
-                "produces": ["application/json"],
-                "parameters": [],
+                "produces": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "in": "header",
+                        "name": "authorization",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "properties": {
+                                "authorization": {
+                                    "type": "string"
+                                }
+                            }
+                        }
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "successful operation",
                         "schema": {
                             "type": "array",
                             "items": {
-                                "$ref":"https://localhost:8080/users"
+                                "$ref": "https://localhost:8080/users"
                             }
                         }
                     },
@@ -42,12 +55,16 @@
                 }
             }
         },
-        "/users/login" : {
-            "post" : {
-                "summary" : "Login",
+        "/users/login": {
+            "post": {
+                "summary": "Login",
                 "description": "User can Login using this api",
-                "produces": ["application/json"],
-                "consumes": ["application/json"],
+                "produces": [
+                    "application/json"
+                ],
+                "consumes": [
+                    "application/json"
+                ],
                 "parameters": [
                     {
                         "in": "body",
@@ -57,12 +74,12 @@
                         "schema": {
                             "type": "object",
                             "properties": {
-                                "email" : {
+                                "email": {
                                     "type": "string"
                                 },
-                                "password" : {
+                                "password": {
                                     "type": "string"
-                                } 
+                                }
                             }
                         }
                     }
@@ -73,8 +90,7 @@
                         "schema": {
                             "type": "array",
                             "items": {
-                                "$ref":"http://localhost:8080/users/login"
-                         
+                                "$ref": "http://localhost:8080/users/login"
                             }
                         }
                     },
@@ -87,31 +103,183 @@
                 }
             }
         },
-        "/todos/{id}" : {
-            "put" : {
-                "summary" : "Update the tasks",
-                "description": "Update the tasks",
-                "produces": ["application/json"],
+        "/users/refresh": {
+            "post": {
+                "summary": "Refresh",
+                "description": "Get Refresh token using this api",
+                "produces": [
+                    "application/json"
+                ],
+                "consumes": [
+                    "application/json"
+                ],
                 "parameters": [
                     {
-                        "name": "id",
-                        "in": "path",
-                        "description": "task id that needs to be deleted",
+                        "in": "header",
+                        "name": "X-Refresh",
                         "required": true,
-                        "type": "string"
+                        "schema": {
+                            "name": "authorization",
+                            "properties": {
+                                "x-Refresh": {
+                                    "type": "string"
+                                }
+                            }
+                        }
                     },
                     {
                         "in": "body",
                         "name": "body",
-                        "description": "task object",
+                        "description": "Payload",
+                        "required": true,
+                        "schema": {
+                            "type": "object"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "http://localhost:8080/users/login"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid status value",
+                        "schema": {
+                            "$ref": "#/definitions/InvalidResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/users": {
+            "post": {
+                "summary": "Add User",
+                "description": "Register using this api",
+                "produces": [
+                    "application/json"
+                ],
+                "consumes": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "in": "body",
+                        "name": "body",
+                        "description": "Payload",
                         "required": true,
                         "schema": {
                             "type": "object",
                             "properties": {
-                                "task" : {
-                                    "type": "object",
-                                    "$ref": "#/definitions/Task"
-                                } 
+                                "name": {
+                                    "type": "string"
+                                },
+                                "dob": {
+                                    "type": "string"
+                                },
+                                "email": {
+                                    "type": "string"
+                                },
+                                "password": {
+                                    "type": "string"
+                                }
+                            }
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "http://localhost:8080/users/login"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid status value",
+                        "schema": {
+                            "$ref": "#/definitions/InvalidResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/posts": {
+            "get": {
+                "summary": "Get Posts",
+                "description": "Show all posts using this api",
+                "produces": [
+                    "application/json"
+                ],
+                "consumes": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "in": "header",
+                        "name": "authorization",
+                        "required": true,
+                        "schema": {
+                            "name": "authorization",
+                            "properties": {
+                                "authorization": {
+                                    "type": "string"
+                                }
+                            }
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "http://localhost:8080/users/login"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid status value",
+                        "schema": {
+                            "$ref": "#/definitions/InvalidResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/posts/{id}/comments": {
+            "get": {
+                "summary": "Get Post comments",
+                "description": "Update the tasks",
+                "produces": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "post comments",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "authorization",
+                        "in": "header",
+                        "required": true,
+                        "type": "string",
+                        "schema": {
+                            "type": "string",
+                            "properties": {
+                                "authorization": {
+                                    "type": "string"
+                                }
                             }
                         }
                     }
@@ -135,18 +303,44 @@
                 }
             }
         },
-        "/todo/{id}" : {
-            "delete" : {
-                "summary" : "Delete the task",
-                "description": "Delete the task",
-                "produces": ["application/json"],
+        "/posts/add": {
+            "post": {
+                "summary": "Create Posts",
+                "description": "Add New Post",
+                "produces": [
+                    "application/json"
+                ],
                 "parameters": [
                     {
-                        "name": "id",
-                        "in": "path",
-                        "description": "task id that needs to be deleted",
+                        "name": "authorization",
+                        "in": "header",
                         "required": true,
-                        "type": "string"
+                        "type": "string",
+                        "schema": {
+                            "type": "string",
+                            "properties": {
+                                "authorization": {
+                                    "type": "string"
+                                }
+                            }
+                        }
+                    },
+                    {
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "type": "object",
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "title": {
+                                    "type": "string"
+                                },
+                                "description": {
+                                    "type": "string"
+                                }
+                            }
+                        }
                     }
                 ],
                 "responses": {
@@ -156,6 +350,267 @@
                             "type": "array",
                             "items": {
                                 "$ref": "#/definitions/todosResponse"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid status value",
+                        "schema": {
+                            "$ref": "#/definitions/InvalidResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/posts/{id}/comments": {
+            "post": {
+                "summary": "Add comments",
+                "description": "Add comment on a post",
+                "produces": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "post Id",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "authorization",
+                        "in": "header",
+                        "required": true,
+                        "type": "string",
+                        "schema": {
+                            "type": "string",
+                            "properties": {
+                                "authorization": {
+                                    "type": "string"
+                                }
+                            }
+                        }
+                    },
+                    {
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "type": "object",
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "comment": {
+                                    "type": "string"
+                                }
+                            }
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/todosResponse"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid status value",
+                        "schema": {
+                            "$ref": "#/definitions/InvalidResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/posts/delete/{id}": {
+            "delete": {
+                "summary": "Delete the Post",
+                "description": "Delete the Post",
+                "produces": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "post id that needs to be deleted",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "authorization",
+                        "in": "header",
+                        "required": true,
+                        "type": "string",
+                        "schema": {
+                            "properties": {
+                                "authorization": {
+                                    "type": "string"
+                                }
+                            }
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/todosResponse"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid status value",
+                        "schema": {
+                            "$ref": "#/definitions/InvalidResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/chats": {
+            "get": {
+                "summary": "Get user chats",
+                "description": "Get chats",
+                "produces": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "in": "header",
+                        "name": "authorization",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "properties": {
+                                "authorization": {
+                                    "type": "string"
+                                }
+                            }
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "user messages",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "https://localhost:8080/users"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid status value",
+                        "schema": {
+                            "$ref": "#/definitions/InvalidResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/chats/{id}": {
+            "get": {
+                "summary": "Get selected chat messages",
+                "description": "Get messages",
+                "produces": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "chat user",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "in": "header",
+                        "name": "authorization",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "properties": {
+                                "authorization": {
+                                    "type": "string"
+                                }
+                            }
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "user messages",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "https://localhost:8080/users"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid status value",
+                        "schema": {
+                            "$ref": "#/definitions/InvalidResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/chats/{id}/send": {
+            "post": {
+                "summary": "Get selected chat messages",
+                "description": "Get messages",
+                "produces": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "in": "header",
+                        "name": "authorization",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "properties": {
+                                "authorization": {
+                                    "type": "string"
+                                }
+                            }
+                        }
+                    },
+                    {
+                        "in": "body",
+                        "name": "body",
+                        "description": "Payload",
+                        "required": true,
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "sender_id": {
+                                    "type": "string"
+                                },
+                                "receiver_id": {
+                                    "type": "string"
+                                },
+                                "message": {
+                                    "type": "string"
+                                }
+                            }
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "user messages",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "https://localhost:8080/users"
                             }
                         }
                     },
@@ -168,13 +623,13 @@
                 }
             }
         }
-    }, 
+    },
     "definitions": {
         "todosResponse": {
             "type": "object",
             "properties": {
                 "id": {
-                     "type": "integer"
+                    "type": "integer"
                 },
                 "task": {
                     "type": "string"
@@ -211,7 +666,6 @@
                     "type": "string"
                 }
             }
-
         }
     }
 }

@@ -10,6 +10,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "bcryptjs": "^2.4.3",
     "connect-pg-simple": "^7.0.0",
     "connect-session-sequelize": "^7.1.2",
     "cors": "^2.8.5",
@@ -19,8 +20,10 @@
     "jsonwebtoken": "^8.5.1",
     "pg": "^8.7.3",
     "postgres": "^1.0.2",
+    "redis": "^4.0.6",
     "sequelize": "^6.5.0",
     "swagger-jsdoc": "^6.1.0",
-    "swagger-ui-express": "^4.3.0"
+    "swagger-ui-express": "^4.3.0",
+    "web-push": "^3.6.3"
   }
 }

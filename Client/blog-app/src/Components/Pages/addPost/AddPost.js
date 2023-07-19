@@ -35,7 +35,7 @@ const AddPost = (props) => {
     if(response.status===401){
         props.history.push('/auth/login');
     }
-    await response.json()
+    response = await response.json()
     if(response.status===201){
      props.hide();
      props.history.push('/blogs'); 
@@ -71,7 +71,7 @@ const AddPost = (props) => {
       <div>
         <div className={styles.backdrop} onClick={()=>props.hide()} />
         <div className={styles["post-section"]}>
-          <form className="form" method="post" onSubmit={addHandler}>
+          <form className="form" method="post">
             <div className="form-group">
               <label className="label">Title</label>
               <input
@@ -92,7 +92,7 @@ const AddPost = (props) => {
             </div>
             <br />
             <div className="button-section">
-              <button className="btn btn-primary">Submit</button>
+              <button typ="submit" onSubmit={(event)=>addHandler(event)} className="btn btn-primary">Submit</button>
             </div>
           </form>
         </div>
